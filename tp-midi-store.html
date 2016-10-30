@@ -1,0 +1,96 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<!--
+`tp-midi-store`
+
+
+@demo demo/index.html 
+-->
+
+<dom-module id="tp-midi-store">
+  <template>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'tp-midi-store',
+
+      properties: {
+        /* Specifies time resolution for each beat. Cannot be chaned dynamically now.*/
+        resolution: {
+          type: Number,
+          value: 24,
+        },
+      },
+
+      _starttime: 0,
+      // FIXME: We may want to consider a de facto JSON based format.
+      _data: {
+        resolution: 24,
+        messages: [],
+      },
+      // FIXME: Should consider channel.
+      _hangingNotes: [],
+
+      data: function () {
+        return this._data.messages;
+      },
+
+      ready: function () {
+      },
+
+      /**
+       * Appends MIDI messages at time.
+       * @param {MidiTime} time
+       * @param {sequence<octet>} message
+       */
+      append: function (time, message) {
+        var status = message[0] & 0xf0;
+        var channel = message[0] & 0x0f;
+
+        // Note on with velocity 0 should be handled as a note off.
+        if (status == 0x90 && message[2] == 0)
+          status = 0x80;
+
+        var data = {};
+        switch (status) {
+          case 0x80:
+            // FIXME: Merging note-on/off could be optional.
+            if (!this._hangingNotes[message[1]] ||
+                this._hangingNotes[message[1]].length == 0) {
+              console.error('unexpected note off received.');
+              break;
+            }
+            // FIXME: Should consider channels.
+            data = this._hangingNotes[message[1]].shift();
+            data.offAt = {
+              measure: time.measure,
+              beat: time.beat,
+              tick: time.tick
+            };
+            return data;
+          case 0x90:
+            data.type = 'note';
+            data.number = message[1];
+            data.velocity = message[2];
+            data.onAt = {
+              measure: time.measure,
+              beat: time.beat,
+              tick: time.tick
+            };
+            data.offAt = data.onAt;
+            this._data.messages.push(data);
+            if (!this._hangingNotes[data.number])
+              this._hangingNotes[data.number] = [];
+            this._hangingNotes[data.number].push(data);
+            break;
+          default:
+            // do not support it.
+            break;
+        }
+        return undefined;
+      },
+    });
+  </script>
+</dom-module>

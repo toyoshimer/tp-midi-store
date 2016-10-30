@@ -1,0 +1,32 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>tp-midi-store test</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../tp-midi-store.html">
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <tp-midi-store></tp-midi-store>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('tp-midi-store', function() {
+
+        test('instantiating the element works', function() {
+          var element = fixture('basic');
+          assert.equal(element.is, 'tp-midi-store');
+        });
+
+      });
+    </script>
+  </body>
+</html>

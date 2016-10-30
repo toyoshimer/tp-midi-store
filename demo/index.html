@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <title>tp-midi-store demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <link rel="import" href="../tp-midi-store.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+
+    <div class="vertical-section-container centered">
+      <h3>Basic tp-midi-store Demo</h3>
+      <demo-snippet>
+        <template>
+          <tp-midi-store id='store'></tp-midi-store>
+          <script>
+            var store = document.getElementById('store');
+            console.log(store.append({
+              measure: 0,
+              beat: 1,
+              tick: 12
+            }, [0x90, 0x60, 0x50]));
+            console.log(store.append({
+              measure: 0,
+              beat: 2,
+              tick: 0
+            }, [0x90, 0x62, 0x30]));
+            console.log(store.append({
+              measure: 0,
+              beat: 3,
+              tick: 12
+            }, [0x80, 0x60, 0x00]));
+            console.log(store.append({
+              measure: 0,
+              beat: 4,
+              tick: 0
+            }, [0x90, 0x62, 0x00]));
+            console.log(store.data());
+          </script>
+        </template>
+      </demo-snippet>
+    </div>
+
+  </body>
+</html>
